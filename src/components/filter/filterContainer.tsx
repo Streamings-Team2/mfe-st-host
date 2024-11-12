@@ -21,6 +21,8 @@ const FilterContainer: React.FC = () => {
     setAirline("");
     setStatus("");
     setFlightNumber("");
+    console.log("Limpiando filtros");
+    
   };
 
   return (

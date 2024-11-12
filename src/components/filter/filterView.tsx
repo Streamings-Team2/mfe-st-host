@@ -1,4 +1,5 @@
 import React from "react";
+import Button from "mfe_st_common/Button";
 
 interface FilterViewProps {
   airline: string;
@@ -85,18 +86,18 @@ const FilterView: React.FC<FilterViewProps> = ({
 
       {/* buttons */}
       <div className="flex space-x-2 mt-2 md:mt-0">
-        <button
+        <Button
+          styleType="primary"
+          label="Filtrar"
           onClick={onFilter}
-          className="bg-blue-500 text-white px-4 py-2 rounded-md font-bold hover:bg-blue-600"
-        >
-          Filtrar
-        </button>
-        <button
+          >
+        </Button>
+        <Button
+          styleType="danger"
+          label="Limpiar"
           onClick={onClear}
-          className="bg-gray-200 text-gray-700 px-4 py-2 rounded-md font-bold hover:bg-gray-300"
         >
-          Limpiar
-        </button>
+        </Button>
       </div>
     </div>
   );
