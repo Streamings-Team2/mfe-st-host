@@ -1,5 +1,14 @@
 import React from "react";
 
+interface Airline {
+  id: number;
+  name: string;
+}
+
+interface State {
+  id: number;
+  state: string;
+}
 interface FilterViewProps {
   airline: string;
   status: string;
@@ -9,6 +18,8 @@ interface FilterViewProps {
   onFlightNumberChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onFilter: () => void;
   onClear: () => void;
+  airlines: Airline[];
+  states: State[];
 }
 
 const FilterView: React.FC<FilterViewProps> = ({
@@ -20,6 +31,8 @@ const FilterView: React.FC<FilterViewProps> = ({
   onFlightNumberChange,
   onFilter,
   onClear,
+  airlines,
+  states,
 }) => {
   return (
     <div className="flex flex-col md:flex-row md:space-x-4 bg-white p-4 rounded-t-lg">
@@ -38,9 +51,11 @@ const FilterView: React.FC<FilterViewProps> = ({
           className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:ring-blue-200"
         >
           <option value="">Seleccione una opción</option>
-          <option value="Avianca">Avianca</option>
-          <option value="Wingo">Wingo</option>
-          <option value="JetSMART">JetSMART</option>
+          {airlines.map((a) => (
+            <option key={a.id} value={a.name}>
+              {a.name}
+            </option>
+          ))}
         </select>
       </div>
 
@@ -59,9 +74,11 @@ const FilterView: React.FC<FilterViewProps> = ({
           className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:ring-blue-200"
         >
           <option value="">Seleccione una opción</option>
-          <option value="En Horario">En Horario</option>
-          <option value="Cancelado">Cancelado</option>
-          <option value="Retrasado">Retrasado</option>
+          {states.map((a) => (
+            <option key={a.id} value={a.state}>
+              {a.state}
+            </option>
+          ))}
         </select>
       </div>
 
