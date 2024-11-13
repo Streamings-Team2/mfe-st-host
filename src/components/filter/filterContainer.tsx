@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import FilterView from "./filterView";
 
-const FilterContainer: React.FC = () => {
+const FilterContainer: React.FC = ( ) => {
   const [airline, setAirline] = useState<string>("");
   const [status, setStatus] = useState<string>("");
   const [flightNumber, setFlightNumber] = useState<string>("");
@@ -17,12 +17,16 @@ const FilterContainer: React.FC = () => {
 
   const handleFilter = () => {
     console.log("Filtrando:", { airline, status, flightNumber });
+
+    // onData({ airline, status, flightNumber }) parametro del componente
+
   };
 
   const handleClear = () => {
-    setAirline("");
-    setStatus("");
-    setFlightNumber("");
+    // setAirline("");
+    // setStatus("");
+    // setFlightNumber("");
+    // onData({})
   };
 
   const loadConstants = async () => {
