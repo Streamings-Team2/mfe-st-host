@@ -1,5 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import Button from "mfe_st_common/Button";
+import Popup from "mfe_st_common/Popup";
+
 
 interface FilterViewProps {
   airline: string;
@@ -10,6 +12,8 @@ interface FilterViewProps {
   onFlightNumberChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onFilter: () => void;
   onClear: () => void;
+  isPopupOpen: boolean;
+  onClosePopup: () => void;
 }
 
 const FilterView: React.FC<FilterViewProps> = ({
@@ -21,7 +25,11 @@ const FilterView: React.FC<FilterViewProps> = ({
   onFlightNumberChange,
   onFilter,
   onClear,
+  isPopupOpen,
+  onClosePopup,
+
 }) => {
+ 
   return (
     <div className="flex flex-col md:flex-row md:space-x-4 bg-white p-4 rounded-t-lg">
       {/* airline select */}
@@ -83,7 +91,7 @@ const FilterView: React.FC<FilterViewProps> = ({
           className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:ring-blue-200"
         />
       </div>
-
+    
       {/* buttons */}
       <div className="flex space-x-2 mt-2 md:mt-0">
         <Button
@@ -93,12 +101,32 @@ const FilterView: React.FC<FilterViewProps> = ({
           >
         </Button>
         <Button
-          styleType="danger"
+          styleType="warning"
           label="Limpiar"
           onClick={onClear}
         >
         </Button>
       </div>
+
+      <div className="p-6">
+              
+                {/* popup */}
+      {isPopupOpen && (
+        <Popup
+          title="Error"
+          content="Por favor, complete todos los campos antes de filtrar."
+          buttonComponent={
+            <Button
+              label="Aceptar"
+              onClick={onClosePopup}
+              styleType="primary"
+            />
+          }
+          onClose={onClosePopup}
+        />
+      )}
+            </div>
+
     </div>
   );
 };

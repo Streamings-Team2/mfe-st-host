@@ -6,6 +6,7 @@ import Utils from "mfe_st_utils/Utils";
 import Errors from "mfe_st_errors/Errors";
 
 import FilterComponent from "./components/filter/filterContainer";
+import Popup from 'mfe_st_errors/Popup';
 
 const App = () => (
   // <div className="mt-10 text-3xl mx-auto max-w-6xl">
@@ -28,6 +29,11 @@ const App = () => (
     {/* pages */}
     <div className="flex items-center justify-between mt-4">
       <div className="w-full bg-white">paginado</div>
+    </div>
+    
+    
+    <div className="flex items-center justify-between mt-4">
+      <div className="w-full bg-white">Popup</div>
     </div>
   </div>
 );
