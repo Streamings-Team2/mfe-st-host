@@ -1,51 +1,54 @@
-import React, { Suspense, useEffect, useState }  from "react";
-import ReactDOM from "react-dom/client";
-import "./index.scss";
-import Common from "mfe_st_common/Common";
-import {restGet} from "mfe_st_utils/Getters";
+import "./index.scss"
+import '@fontsource-variable/roboto-condensed'
+import React, { Suspense, useEffect, useState }  from "react"
+import ReactDOM from "react-dom/client"
+import TableComponent from "mfe_st_common/TableComponent"
+import FilterComponent from "./components/filter/filterContainer"
+import PaginationComponent from "mfe_st_common/PaginationComponent"
+import {getPagination, getDataSlice} from "mfe_st_utils/Pagination"
+import {restGet} from "mfe_st_utils/Getters"
 import {URL} from "mfe_st_utils/CONSTANTS"
-import TableComponent from "mfe_st_common/TableComponent";
-import FilterComponent from "./components/filter/filterContainer";
-// import Errors from "mfe_st_errors/Errors";
-import { DATA, TABLE_PAY_HEADERS } from "./mock/mock";
-import { Flight } from "./models/Flight";
+import { TABLE_PAY_HEADERS } from "./mock/mock"
+import { Flight } from "./models/Flight"
+// import Errors from "mfe_st_errors/Errors"
+
 
 const App = () => {
   const [data, setData] = useState<Flight[]>([])
   const [parameters, setParameters] = useState<string>("")
-  const [pagination, setPagination] = useState<string>("")
+  const [currentPage, setCurrentPage] = useState(1)
+  const [visiblePages, setVisiblePages ] = useState<number[]>([])
+  const [totalPages, setTotalPages ] = useState<number>(0)
+  const [itemsPerPage, _ ] = useState<number>(5)
 
-  const handlerPaginate = (parameters:string)=>{
-    setPagination(parameters)
-    getFlights(URL, parameters)
+  const handlePageChange = (page: number)=>{
+    setCurrentPage(page)
+    getFlights(URL, parameters, page)
   }
 
   const handlerData = (filters:any)=>{
     setParameters(filters)
-    getFlights(URL, parameters)
+    getFlights(URL, parameters, currentPage)
   }
   
-  const getFlights = (url:string, query:string)=>{
+  const getFlights = (url:string, query:string, currentPage:number)=>{
     restGet(url)
-    .then((data:Flight[]) => {
-      setData(data)
-    })
-    .catch((err: any) =>{
-      console.error(err)
-    })
+      .then((data:Flight[]) => {
+        const {pages, totalPages} = getPagination(currentPage, data.length,itemsPerPage, 3)
+        setVisiblePages(pages)
+        setTotalPages(totalPages)
+        setData(getDataSlice(data, itemsPerPage, currentPage))
+      })
+      .catch((err: any) =>{
+        console.error(err)
+      })
   }
 
   useEffect(()=> {
-    getFlights(URL, parameters)
+    getFlights(URL, parameters, 1)
   },[])
-  
 
   return (
-  // <div className="mt-10 text-3xl mx-auto max-w-6xl">
-  //   <Utils />
-  //   <Common />
-  //   <Errors />
-  // </div>
     <div className="h-screen bg-blue-100 p-4 flex flex-col">
       {/* filter */}
       <div className="bg-white rounded-t-lg p-4 shadow-md mb-4">
@@ -63,19 +66,26 @@ const App = () => {
       </div>
     
       {/* pages */}
-      <div className="flex items-center justify-between mt-4">
-        <div className="w-full bg-white" >paginado</div>
+      <div className="bg-white rounded-b-lg p-4 shadow-md mb-4 flex items-center justify-center mt-4">
+        {data.length && (
+          <PaginationComponent
+            currentPage={currentPage}
+            totalPages={totalPages}
+            visiblePages={visiblePages}
+            onPageChange={handlePageChange}
+          />
+        )}
       </div>
     </div>
-  );
+  )
 }
 
-const rootElement = document.getElementById("app");
-if (!rootElement) throw new Error("Failed to find the root element");
-const root = ReactDOM.createRoot(rootElement as HTMLElement);
+const rootElement = document.getElementById("app")
+if (!rootElement) throw new Error("Failed to find the root element")
+const root = ReactDOM.createRoot(rootElement as HTMLElement)
 root.render(
   <Suspense fallback={<div>loading</div>}>
     <App />
   </Suspense>
-);
+)
 
