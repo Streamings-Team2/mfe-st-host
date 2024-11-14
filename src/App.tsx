@@ -3,7 +3,7 @@ import ReactDOM from "react-dom/client";
 import "./index.scss";
 import Common from "mfe_st_common/Common";
 import Utils from "mfe_st_utils/Utils";
-import Errors from "mfe_st_errors/Errors";
+import NotFound from "mfe_st_errors/NotFound";
 
 import FilterComponent from "./components/filter/filterContainer";
 import Popup from 'mfe_st_errors/Popup';
@@ -28,10 +28,12 @@ const App = () => (
 
     {/* pages */}
     <div className="flex items-center justify-between mt-4">
-      <div className="w-full bg-white">paginado</div>
+      <div className="w-full bg-white">
+        <NotFound />
+      </div>
     </div>
-    
-    
+
+
     <div className="flex items-center justify-between mt-4">
       <div className="w-full bg-white">Popup</div>
     </div>

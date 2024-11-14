@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import FilterView from "./filterView";
-import Errors from '../../../../mfe-st-error/src/components/Errors';
 
 const FilterContainer: React.FC = () => {
   const [airline, setAirline] = useState<string>("");
