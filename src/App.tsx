@@ -7,6 +7,8 @@ import {URL} from "mfe_st_utils/CONSTANTS"
 import TableComponent from "mfe_st_common/TableComponent";
 import FilterComponent from "./components/filter/filterContainer";
 // import Errors from "mfe_st_errors/Errors";
+import ErrorBoundary  from "mfe_st_errors/ErrorBoundary";
+import BuggyComponent  from "mfe_st_errors/BuggyComponent";
 import { DATA, TABLE_PAY_HEADERS } from "./mock/mock";
 import { Flight } from "./models/Flight";
 
@@ -54,12 +56,13 @@ const App = () => {
   //   <Common />
   //   <Errors />
   // </div>
+  <ErrorBoundary>
     <div className="h-screen bg-blue-100 p-4 flex flex-col">
       {/* filter */}
       <div className="bg-white rounded-t-lg p-4 shadow-md mb-4">
         <FilterComponent onData={handlerData}/>
       </div>
-    
+      {/* <BuggyComponent />  */}
       {/* table */}
       <div className="flex-grow overflow-y-auto">
         <TableComponent
@@ -75,6 +78,7 @@ const App = () => {
         <div className="w-full bg-white" >paginado</div>
       </div>
     </div>
+    </ErrorBoundary>
   );
 }
 
