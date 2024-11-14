@@ -12,7 +12,7 @@ import { Flight } from "./models/Flight";
 
 const App = () => {
   const [data, setData] = useState<Flight[]>([])
-  const [parameters, setParameters] = useState<string>("")
+  const [parameters, setParameters] = useState<any>({});
   const [pagination, setPagination] = useState<string>("")
 
   const handlerPaginate = (parameters:string)=>{
@@ -20,24 +20,32 @@ const App = () => {
     getFlights(URL, parameters)
   }
 
-  const handlerData = (filters:any)=>{
-    setParameters(filters)
-    getFlights(URL, parameters)
+  const handlerData =  (filters:any)=>{
+     setParameters(filters)
+     getFlights(URL, parameters)
   }
   
-  const getFlights = (url:string, query:string)=>{
-    restGet(url)
-    .then((data:Flight[]) => {
-      setData(data)
-    })
-    .catch((err: any) =>{
-      console.error(err)
-    })
-  }
+
+  
+  const getFlights = (url: string, params: any) => {
+    
+    const query = Object.keys(params)
+      .filter(key => params[key] !== "")
+      .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`)
+      .join('&');
+  
+    restGet(`${url}?${query}`)
+      .then((data: Flight[]) => {
+        setData(data);
+      })
+      .catch((err: any) => {
+        console.error(err);
+      });
+  };
 
   useEffect(()=> {
     getFlights(URL, parameters)
-  },[])
+  },[parameters])
   
 
   return (

@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import FilterView from "./filterView";
-import {STATES, AIRLINES} from "mfe_st_utils/CONSTANTS"
+import {STATES, AIRLINES} from "mfe_st_utils/CONSTANTS";
 
 interface Props {
   onData: (filter: any)=> void
 }
 const FilterContainer: React.FC<Props> = ( {onData}:Props ) => {
-  const [airline, setAirline] = useState<string>("");
+  const [airlineName, setAirline] = useState<string>("");
   const [status, setStatus] = useState<string>("");
   const [flightNumber, setFlightNumber] = useState<string>("");
   // const [airlinesList, setAirlinesList] = useState([]); 
@@ -20,11 +20,11 @@ const FilterContainer: React.FC<Props> = ( {onData}:Props ) => {
     setFlightNumber(e.target.value);
 
   const handleFilter = () => {
-    console.log("Filtrando:", { airline, status, flightNumber });
+    console.log("Filtrando:", { airlineName, status, flightNumber });
 
-    if(airline || status || flightNumber){
+    if(airlineName || status || flightNumber){
       
-      onData({ airline, status, flightNumber }) 
+      onData({ airlineName, status, flightNumber }) 
     }
 
   };
@@ -33,12 +33,12 @@ const FilterContainer: React.FC<Props> = ( {onData}:Props ) => {
     setAirline("");
     setStatus("");
     setFlightNumber("");
-    // onData({})
+     onData({})
   };
 
   return (
     <FilterView
-      airline={airline}
+      airline={airlineName}
       status={status}
       flightNumber={flightNumber}
       onAirlineChange={handleAirlineChange}
