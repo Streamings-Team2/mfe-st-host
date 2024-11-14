@@ -60,7 +60,6 @@ const FilterContainer: React.FC<Props> = ( {onData}:Props ) => {
       states={STATES} 
     />
 
-   {/* Popup que se muestra si todos los filtros están vacíos */}
    {isPopupVisible && (
         <Popup
           title="Información"
