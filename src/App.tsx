@@ -38,7 +38,7 @@ const App = () => {
       .map((key:any) => `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`)
       .join('&');
 
-    restGet(url)
+    restGet(`${url}?${query}`)
       .then((data:Flight[]) => {
         const {pages, totalPages} = getPagination(currentPage, data.length,itemsPerPage, 3)
         setVisiblePages(pages)
@@ -52,7 +52,7 @@ const App = () => {
 
   useEffect(()=> {
     getFlights(URL, parameters, 1)
-  },[])
+  },[parameters])
 
   return (
     <div className="h-screen bg-blue-100 p-4 flex flex-col">
