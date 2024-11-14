@@ -1,16 +1,18 @@
 import React, { useState } from "react";
 import FilterView from "./filterView";
-import {STATES, AIRLINES} from "mfe_st_utils/CONSTANTS"
-
+import {STATES, AIRLINES} from "mfe_st_utils/CONSTANTS";
+import Popup from "mfe_st_errors/Popup";
+import Button from "mfe_st_common/Button";
 interface Props {
   onData: (filter: any)=> void
 }
 const FilterContainer: React.FC<Props> = ( {onData}:Props ) => {
-  const [airline, setAirline] = useState<string>("");
+  const [airlineName, setAirline] = useState<string>("");
   const [status, setStatus] = useState<string>("");
   const [flightNumber, setFlightNumber] = useState<string>("");
   // const [airlinesList, setAirlinesList] = useState([]); 
   // const [statesList, setStatesList] = useState([]); 
+  const [isPopupVisible, setIsPopupVisible] = useState(false);
 
   const handleAirlineChange = (e: React.ChangeEvent<HTMLSelectElement>) =>
     setAirline(e.target.value);
@@ -20,11 +22,15 @@ const FilterContainer: React.FC<Props> = ( {onData}:Props ) => {
     setFlightNumber(e.target.value);
 
   const handleFilter = () => {
-    console.log("Filtrando:", { airline, status, flightNumber });
+    if (!airlineName && !status && !flightNumber) {
+      setIsPopupVisible(true);
+      return;
+    }
+    console.log("Filtrando:", { airlineName, status, flightNumber });
 
-    if(airline || status || flightNumber){
+    if(airlineName || status || flightNumber){
       
-      onData({ airline, status, flightNumber }) 
+      onData({ airlineName, status, flightNumber }) 
     }
 
   };
@@ -33,12 +39,16 @@ const FilterContainer: React.FC<Props> = ( {onData}:Props ) => {
     setAirline("");
     setStatus("");
     setFlightNumber("");
-    // onData({})
+     onData({})
+  };
+  const handleClosePopup = () => {
+    setIsPopupVisible(false);
   };
 
   return (
+    <>
     <FilterView
-      airline={airline}
+      airline={airlineName}
       status={status}
       flightNumber={flightNumber}
       onAirlineChange={handleAirlineChange}
@@ -49,6 +59,24 @@ const FilterContainer: React.FC<Props> = ( {onData}:Props ) => {
       airlines={AIRLINES} 
       states={STATES} 
     />
+
+   {isPopupVisible && (
+        <Popup
+          title="Información"
+          content="Debe ingresar al menos un filtro para realizar la búsqueda."
+          onClose={handleClosePopup}
+          buttonComponent={
+            <Button onClick={handleClosePopup} 
+             className="bg-blue-500 text-white px-4 py-2 rounded-md font-bold"
+            >
+Aceptar
+              </Button>
+          }
+        />
+      )}
+
+
+    </>
   );
 };
 

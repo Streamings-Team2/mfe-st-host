@@ -5,13 +5,13 @@ import ReactDOM from "react-dom/client"
 import TableComponent from "mfe_st_common/TableComponent"
 import FilterComponent from "./components/filter/filterContainer"
 import PaginationComponent from "mfe_st_common/PaginationComponent"
+import ErrorBoundary  from "mfe_st_errors/ErrorBoundary";
+// import BuggyComponent  from "mfe_st_errors/BuggyComponent";
 import {getPagination, getDataSlice} from "mfe_st_utils/Pagination"
 import {restGet} from "mfe_st_utils/Getters"
 import {URL} from "mfe_st_utils/CONSTANTS"
 import { TABLE_PAY_HEADERS } from "./mock/mock"
 import { Flight } from "./models/Flight"
-// import Errors from "mfe_st_errors/Errors"
-
 
 const App = () => {
   const [data, setData] = useState<Flight[]>([])
@@ -20,6 +20,7 @@ const App = () => {
   const [visiblePages, setVisiblePages ] = useState<number[]>([])
   const [totalPages, setTotalPages ] = useState<number>(0)
   const [itemsPerPage, _ ] = useState<number>(5)
+
 
   const handlePageChange = (page: number)=>{
     setCurrentPage(page)
@@ -31,7 +32,12 @@ const App = () => {
     getFlights(URL, parameters, currentPage)
   }
   
-  const getFlights = (url:string, query:string, currentPage:number)=>{
+  const getFlights = (url:string, params:string, currentPage:number)=>{
+    const query = Object.keys(params)
+      .filter((key:any) => params[key] !== "")
+      .map((key:any) => `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`)
+      .join('&');
+
     restGet(url)
       .then((data:Flight[]) => {
         const {pages, totalPages} = getPagination(currentPage, data.length,itemsPerPage, 3)
@@ -54,7 +60,7 @@ const App = () => {
       <div className="bg-white rounded-t-lg p-4 shadow-md mb-4">
         <FilterComponent onData={handlerData}/>
       </div>
-    
+      {/* <BuggyComponent />  */}
       {/* table */}
       <div className="flex-grow overflow-y-auto">
         <TableComponent
@@ -78,6 +84,7 @@ const App = () => {
       </div>
     </div>
   )
+
 }
 
 const rootElement = document.getElementById("app")
@@ -85,7 +92,9 @@ if (!rootElement) throw new Error("Failed to find the root element")
 const root = ReactDOM.createRoot(rootElement as HTMLElement)
 root.render(
   <Suspense fallback={<div>loading</div>}>
-    <App />
+    <ErrorBoundary>
+      <App />
+    </ErrorBoundary>
   </Suspense>
 )
 
