@@ -36,7 +36,8 @@ const FilterView: React.FC<FilterViewProps> = ({
   states,
 }) => {
   return (
-    <div className="flex flex-col md:flex-row md:space-x-4 bg-white p-4 rounded-t-lg">
+    // <div className="flex flex-col md:flex-row md:space-x-4 bg-white p-4 rounded-t-lg">
+    <div className="flex md:flex-row md:space-x-4 bg-white p-4 rounded-t-lg">
       {/* airline select */}
       <div className="mb-4 md:mb-0 w-full md:w-1/3">
         <label

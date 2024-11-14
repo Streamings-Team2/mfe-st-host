@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import FilterView from "./filterView";
 import {STATES, AIRLINES} from "mfe_st_utils/CONSTANTS";
-import Popup from "mfe_st_errors/Popup";
+import Popup from "mfe_st_errors/PopupComponent";
 import Button from "mfe_st_common/Button";
 interface Props {
   onData: (filter: any)=> void
