@@ -24,6 +24,6 @@
   },
   "include": [
     "src/**/*" // *** The files TypeScript should type check ***
-  ],
+, "jest.setup.js", "__tests__"  ],
   "exclude": ["node_modules", "build", "dist"]
 }
