@@ -1,4 +1,5 @@
 import React from "react";
+import Button from "mfe_st_common/Button";
 
 interface Airline {
   id: number;
@@ -51,7 +52,7 @@ const FilterView: React.FC<FilterViewProps> = ({
           className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:ring-blue-200"
         >
           <option value="">Seleccione una opción</option>
-          {airlines.map((a) => (
+          {airlines.length && airlines.map((a) => (
             <option key={a.id} value={a.name}>
               {a.name}
             </option>
@@ -74,7 +75,7 @@ const FilterView: React.FC<FilterViewProps> = ({
           className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:ring-blue-200"
         >
           <option value="">Seleccione una opción</option>
-          {states.map((a) => (
+          {states && states.map((a) => (
             <option key={a.id} value={a.state}>
               {a.state}
             </option>
@@ -102,7 +103,7 @@ const FilterView: React.FC<FilterViewProps> = ({
 
       {/* buttons */}
       <div className="flex space-x-2 mt-2 md:mt-0">
-        <button
+        {/* <button
           onClick={onFilter}
           className="bg-blue-500 text-white px-4 py-2 rounded-md font-bold hover:bg-blue-600"
         >
@@ -113,7 +114,21 @@ const FilterView: React.FC<FilterViewProps> = ({
           className="bg-gray-200 text-gray-700 px-4 py-2 rounded-md font-bold hover:bg-gray-300"
         >
           Limpiar
-        </button>
+        </button> */}
+
+        <Button
+          onClick={onFilter}
+          className="bg-blue-500 text-white px-4 py-2 rounded-md font-bold hover:bg-blue-600"
+        >
+          Filtrar
+        </Button>
+
+        <Button
+          onClick={onClear}
+          className="bg-gray-200 text-gray-700 px-4 py-2 rounded-md font-bold hover:bg-gray-300"
+        >
+          Limpiar
+        </Button>
       </div>
     </div>
   );

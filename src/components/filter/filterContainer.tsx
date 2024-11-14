@@ -1,12 +1,16 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import FilterView from "./filterView";
+import {STATES, AIRLINES} from "mfe_st_utils/CONSTANTS"
 
-const FilterContainer: React.FC = ( ) => {
+interface Props {
+  onData: (filter: any)=> void
+}
+const FilterContainer: React.FC<Props> = ( {onData}:Props ) => {
   const [airline, setAirline] = useState<string>("");
   const [status, setStatus] = useState<string>("");
   const [flightNumber, setFlightNumber] = useState<string>("");
-  const [airlinesList, setAirlinesList] = useState([]); 
-  const [statesList, setStatesList] = useState([]); 
+  // const [airlinesList, setAirlinesList] = useState([]); 
+  // const [statesList, setStatesList] = useState([]); 
 
   const handleAirlineChange = (e: React.ChangeEvent<HTMLSelectElement>) =>
     setAirline(e.target.value);
@@ -18,7 +22,10 @@ const FilterContainer: React.FC = ( ) => {
   const handleFilter = () => {
     console.log("Filtrando:", { airline, status, flightNumber });
 
-    // onData({ airline, status, flightNumber }) parametro del componente
+    if(airline || status || flightNumber){
+      
+      onData({ airline, status, flightNumber }) 
+    }
 
   };
 
@@ -28,26 +35,6 @@ const FilterContainer: React.FC = ( ) => {
     setFlightNumber("");
     // onData({})
   };
-
-  const loadConstants = async () => {
-    try {
-      const module = await import("mfe_st_utils/CONSTANTS");
-      const { AIRLINES, STATES } = module.default;
-
-      setAirlinesList(AIRLINES); 
-      setStatesList(STATES); 
-    } catch (error) {
-      console.error("Error al cargar las constantes:", error);
-    }
-  };
-
- 
-  useEffect(() => {
-    loadConstants();
-   
-    
-  }, []);
-  
 
   return (
     <FilterView
@@ -59,8 +46,8 @@ const FilterContainer: React.FC = ( ) => {
       onFlightNumberChange={handleFlightNumberChange}
       onFilter={handleFilter}
       onClear={handleClear}
-      airlines={airlinesList} 
-      states={statesList} 
+      airlines={AIRLINES} 
+      states={STATES} 
     />
   );
 };
