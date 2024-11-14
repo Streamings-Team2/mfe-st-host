@@ -1,20 +1,18 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.scss";
-import Common from "mfe_st_common/Common";
-import Utils from "mfe_st_utils/Utils";
-import NotFound from "mfe_st_errors/NotFound";
-
+// import Common from "mfe_st_common/Common";
+// import Utils from "mfe_st_utils/Utils";
+import ErrorBoundary from "./components/ErrorBoundary";
 import FilterComponent from "./components/filter/filterContainer";
-import Popup from 'mfe_st_errors/Popup';
-
+import BuggyComponent from "./components/BuggyComponent";
 const App = () => (
   // <div className="mt-10 text-3xl mx-auto max-w-6xl">
   //   <Utils />
   //   <Common />
   //   <Errors />
   // </div>
-
+<ErrorBoundary>
   <div className="h-screen bg-blue-100 p-4 flex flex-col">
     {/* filter */}
     <div className="bg-white rounded-t-lg p-4 shadow-md mb-4">
@@ -25,11 +23,11 @@ const App = () => (
     <div className="flex-grow overflow-y-auto">
       <div className="w-full bg-white">tabla</div>
     </div>
-
+    {/* <BuggyComponent />  */}
     {/* pages */}
     <div className="flex items-center justify-between mt-4">
       <div className="w-full bg-white">
-        <NotFound />
+        pages
       </div>
     </div>
 
@@ -38,6 +36,7 @@ const App = () => (
       <div className="w-full bg-white">Popup</div>
     </div>
   </div>
+  </ErrorBoundary>
 );
 const rootElement = document.getElementById("app");
 if (!rootElement) throw new Error("Failed to find the root element");
