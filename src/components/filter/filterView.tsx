@@ -1,5 +1,9 @@
 import React from "react";
 import Button from "mfe_st_common/Button";
+import LabelComponent from "mfe_st_common/LabelComponent";
+import InputComponent from "mfe_st_common/InputComponent";
+import SelectComponent from "mfe_st_common/SelectComponent";
+import OptionComponent from "mfe_st_common/OptionComponent";
 
 interface Airline {
   id: number;
@@ -39,59 +43,59 @@ const FilterView: React.FC<FilterViewProps> = ({
     <div className="flex  md:flex-row md:space-x-4 sm:flex-col bg-white p-4 rounded-t-lg">
       {/* airline select */}
       <div className="mb-4 md:mb-0 w-full md:w-1/3">
-        <label
+        <LabelComponent
           className="block text-gray-700 text-sm font-bold mb-2"
           htmlFor="airline"
         >
           Aerolínea
-        </label>
-        <select
+        </LabelComponent>
+        <SelectComponent
           id="airline"
           value={airline}
           onChange={onAirlineChange}
           className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:ring-blue-200"
         >
-          <option value="">Seleccione una opción</option>
+          <OptionComponent value="">Seleccione una opción</OptionComponent>
           {airlines.length && airlines.map((a) => (
-            <option key={a.id} value={a.name}>
+            <OptionComponent key={a.id} value={a.name}>
               {a.name}
-            </option>
+            </OptionComponent>
           ))}
-        </select>
+        </SelectComponent>
       </div>
 
       {/* status select*/}
       <div className="mb-4 md:mb-0 w-full md:w-1/3">
-        <label
+        <LabelComponent
           className="block text-gray-700 text-sm font-bold mb-2"
           htmlFor="status"
         >
           Estado
-        </label>
-        <select
+        </LabelComponent>
+        <SelectComponent
           id="status"
           value={status}
           onChange={onStatusChange}
           className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:ring-blue-200"
         >
-          <option value="">Seleccione una opción</option>
+          <OptionComponent value="">Seleccione una opción</OptionComponent>
           {states && states.map((a) => (
-            <option key={a.id} value={a.state}>
+            <OptionComponent key={a.id} value={a.state}>
               {a.state}
-            </option>
+            </OptionComponent>
           ))}
-        </select>
+        </SelectComponent>
       </div>
 
       {/* flisht number */}
       <div className="mb-4 md:mb-0 w-full md:w-1/3">
-        <label
+        <LabelComponent
           className="block text-gray-700 text-sm font-bold mb-2"
           htmlFor="flightNumber"
         >
           N° vuelo
-        </label>
-        <input
+        </LabelComponent>
+        <InputComponent
           id="flightNumber"
           type="text"
           value={flightNumber}
