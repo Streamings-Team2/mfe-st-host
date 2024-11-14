@@ -23,9 +23,9 @@ const FilterContainer: React.FC = ( ) => {
   };
 
   const handleClear = () => {
-    // setAirline("");
-    // setStatus("");
-    // setFlightNumber("");
+    setAirline("");
+    setStatus("");
+    setFlightNumber("");
     // onData({})
   };
 
