@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import FilterView from "./filterView";
 import {STATES, AIRLINES} from "mfe_st_utils/CONSTANTS";
-
+import Popup from "mfe_st_errors/Popup";
+import Button from "mfe_st_common/Button";
 interface Props {
   onData: (filter: any)=> void
 }
@@ -11,6 +12,7 @@ const FilterContainer: React.FC<Props> = ( {onData}:Props ) => {
   const [flightNumber, setFlightNumber] = useState<string>("");
   // const [airlinesList, setAirlinesList] = useState([]); 
   // const [statesList, setStatesList] = useState([]); 
+  const [isPopupVisible, setIsPopupVisible] = useState(false);
 
   const handleAirlineChange = (e: React.ChangeEvent<HTMLSelectElement>) =>
     setAirline(e.target.value);
@@ -20,6 +22,10 @@ const FilterContainer: React.FC<Props> = ( {onData}:Props ) => {
     setFlightNumber(e.target.value);
 
   const handleFilter = () => {
+    if (!airlineName && !status && !flightNumber) {
+      setIsPopupVisible(true);
+      return;
+    }
     console.log("Filtrando:", { airlineName, status, flightNumber });
 
     if(airlineName || status || flightNumber){
@@ -35,8 +41,12 @@ const FilterContainer: React.FC<Props> = ( {onData}:Props ) => {
     setFlightNumber("");
      onData({})
   };
+  const handleClosePopup = () => {
+    setIsPopupVisible(false);
+  };
 
   return (
+    <>
     <FilterView
       airline={airlineName}
       status={status}
@@ -49,6 +59,25 @@ const FilterContainer: React.FC<Props> = ( {onData}:Props ) => {
       airlines={AIRLINES} 
       states={STATES} 
     />
+
+   {/* Popup que se muestra si todos los filtros están vacíos */}
+   {isPopupVisible && (
+        <Popup
+          title="Información"
+          content="Debe ingresar al menos un filtro para realizar la búsqueda."
+          onClose={handleClosePopup}
+          buttonComponent={
+            <Button onClick={handleClosePopup} 
+             className="bg-blue-500 text-white px-4 py-2 rounded-md font-bold"
+            >
+Aceptar
+              </Button>
+          }
+        />
+      )}
+
+
+    </>
   );
 };
 
