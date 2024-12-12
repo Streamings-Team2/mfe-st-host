@@ -106,7 +106,7 @@ const MainApp = () => {
     await localStorage.removeItem("user");
 
     try {
-      await instance.logoutRedirect(); // Usar el contexto para cerrar sesión
+      await instance.logoutRedirect(); 
     } catch (error) {
       console.error("Error al cerrar sesión con MSAL:", error);
     }
