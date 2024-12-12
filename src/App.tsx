@@ -23,15 +23,9 @@ import { useMsal } from "@azure/msal-react";
 
 import { PublicClientApplication } from "@azure/msal-browser";
 import LoginComponent from "mfe_st_login/LoginComponent";
+import {msalConfig} from "../msalConfig";
 
-const msalInstance = new PublicClientApplication({
-  auth: {
-    clientId: "25dc2e1a-eced-46ab-8e36-dd230ddfdbd8",
-    tenant:
-      "https://login.microsoftonline.com/25dc2e1a-eced-46ab-8e36-dd230ddfdbd8",
-    redirectUri: "http://localhost:3000",
-  },
-});
+const msalInstance = new PublicClientApplication(msalConfig);
 const user = localStorage.getItem("user"); // Verifica si hay usuario en localStorage
 
 const PrivateRoute = ({ children }: { children: JSX.Element }) => {
