@@ -1,11 +1,8 @@
 import React, { useEffect, useState } from "react";
-
+import { useMsal } from "@azure/msal-react";
 import { Flight } from "../../models/Flight";
 import { TABLE_PAY_HEADERS } from "../../mock/mock";
 import FilterComponent from "../filter/filterContainer";
-
-import { useMsal } from "@azure/msal-react";
-
 import { getPagination, getDataSlice } from "mfe_st_utils/Pagination";
 import { restGet } from "mfe_st_utils/Getters";
 import { URL } from "mfe_st_utils/CONSTANTS";
@@ -60,10 +57,16 @@ export const MainApp = () => {
   };
 
   useEffect(() => {
-    let user = JSON.parse(localStorage.getItem("user") || "{}");
+    const user = JSON.parse(localStorage.getItem("user") || "{}");
+
+    if (!user || Object.keys(user).length === 0) {
+      window.location.href = "/login";
+      return;
+    }
+
     const setUserData = {
-      fullName: user.name,
-      email: user.username,
+      fullName: user.name || "",
+      email: user.username || "",
     };
     setUser(setUserData);
 
