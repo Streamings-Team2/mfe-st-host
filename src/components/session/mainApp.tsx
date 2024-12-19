@@ -1,18 +1,25 @@
 import React, { useEffect, useState } from "react";
 import { useMsal } from "@azure/msal-react";
-import { Flight } from "../../models/Flight";
+
+import { useQuery } from "@apollo/client";
+
+import { Flight, FlightParams } from "../../models/Flight";
 import { TABLE_PAY_HEADERS } from "../../mock/mock";
 import FilterComponent from "../filter/filterContainer";
+import { FLIGTHS } from "../../querys/flightsQuery";
+
+/* import { URL } from "mfe_st_utils/CONSTANTS"; */
+/* import { restGet } from "mfe_st_utils/Getters"; */
 import { getPagination, getDataSlice } from "mfe_st_utils/Pagination";
-import { restGet } from "mfe_st_utils/Getters";
-import { URL } from "mfe_st_utils/CONSTANTS";
 import { getInitials } from "mfe_st_utils/InfoData";
 import PaginationComponent from "mfe_st_common/PaginationComponent";
 import TableComponent from "mfe_st_common/TableComponent";
+import Button from "mfe_st_common/Button";
+import Popup from "mfe_st_errors/PopupComponent";
 
 export const MainApp = () => {
-  const [data, setData] = useState<Flight[]>([]);
-  const [parameters, setParameters] = useState<string>("");
+  const [info, setInfo] = useState<Flight[]>([]);
+  const [parameters, setParameters] = useState<FlightParams>({});
   const [currentPage, setCurrentPage] = useState(1);
   const [visiblePages, setVisiblePages] = useState<number[]>([]);
   const [totalPages, setTotalPages] = useState<number>(0);
@@ -20,41 +27,36 @@ export const MainApp = () => {
   const [userData, setUser] = useState({ fullName: "", email: "" });
   const { instance } = useMsal();
 
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-    getFlights(URL, parameters, page);
-  };
+  const [isPopupVisible, setIsPopupVisible] = useState(false);
 
-  const handlerData = (filters: any) => {
-    setParameters(filters);
-    getFlights(URL, parameters, currentPage);
-  };
+  const { error, data } = useQuery(FLIGTHS, {
+    variables: {
+      airlineName: parameters.airlineName,
+      status: parameters.status,
+      flightNumber: parameters.flightNumber,
+    },
+  });
 
-  const getFlights = (url: string, params: string, currentPage: number) => {
-    const query = Object.keys(params)
-      .filter((key: any) => params[key] !== "")
-      .map(
-        (key: any) =>
-          `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`
-      )
-      .join("&");
-
-    restGet(`${url}?${query}`)
-      .then((data: Flight[]) => {
+  useEffect(() => {
+    if (error) {
+      console.error("Error fetching flights:", error);
+    }
+    if (data) {
+      if (data.flights.flights.length === 0) {
+        setIsPopupVisible(true);
+      } else {
         const { pages, totalPages } = getPagination(
           currentPage,
-          data.length,
+          data.flights.flights.length || 0,
           itemsPerPage,
           3
         );
         setVisiblePages(pages);
         setTotalPages(totalPages);
-        setData(getDataSlice(data, itemsPerPage, currentPage));
-      })
-      .catch((err: any) => {
-        console.error(err);
-      });
-  };
+        setInfo(getDataSlice(data.flights.flights, itemsPerPage, currentPage));
+      }
+    }
+  }, [data, error, currentPage]);
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user") || "{}");
@@ -69,9 +71,19 @@ export const MainApp = () => {
       email: user.username || "",
     };
     setUser(setUserData);
+  }, []);
 
-    getFlights(URL, parameters, 1);
-  }, [parameters]);
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const handlerData = (filters: any) => {
+    setParameters(filters);
+  };
+
+  const handleClosePopup = () => {
+    setIsPopupVisible(false);
+  };
 
   const handleLogout = async () => {
     await localStorage.removeItem("user");
@@ -110,13 +122,13 @@ export const MainApp = () => {
       <div className="flex-grow overflow-y-auto">
         <TableComponent
           headers={TABLE_PAY_HEADERS}
-          data={data}
+          data={info}
           editActions={() => {}}
           optionsActions={() => {}}
         />
       </div>
       <div className="bg-white rounded-b-lg p-4 shadow-md mb-4 flex items-center justify-center mt-4">
-        {data.length > 0 && (
+        {info.length > 0 && (
           <PaginationComponent
             currentPage={currentPage}
             totalPages={totalPages}
@@ -125,6 +137,21 @@ export const MainApp = () => {
           />
         )}
       </div>
+      {isPopupVisible && (
+        <Popup
+          title="!Lo sentimos¡"
+          content="No se encuentran resultados para estos criterios de búsqueda."
+          onClose={handleClosePopup}
+          buttonComponent={
+            <Button
+              onClick={handleClosePopup}
+              className="bg-blue-500 text-white px-4 py-2 rounded-md font-bold"
+            >
+              Aceptar
+            </Button>
+          }
+        />
+      )}
     </div>
   );
 };
