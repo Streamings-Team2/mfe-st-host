@@ -44,6 +44,7 @@ export const MainApp = () => {
     if (data) {
       if (data.flights.flights.length === 0) {
         setIsPopupVisible(true);
+        setInfo(getDataSlice(data.flights.flights, itemsPerPage, currentPage));
       } else {
         const { pages, totalPages } = getPagination(
           currentPage,
