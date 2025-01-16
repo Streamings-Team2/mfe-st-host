@@ -12,6 +12,7 @@ import { FLIGTHS } from "../../querys/flightsQuery";
 /* import { restGet } from "mfe_st_utils/Getters"; */
 import { getPagination, getDataSlice } from "mfe_st_utils/Pagination";
 import { getInitials } from "mfe_st_utils/InfoData";
+import { decrypt } from "mfe_st_utils/Crypto";
 import PaginationComponent from "mfe_st_common/PaginationComponent";
 import TableComponent from "mfe_st_common/TableComponent";
 import Button from "mfe_st_common/Button";
@@ -60,7 +61,7 @@ export const MainApp = () => {
   }, [data, error, currentPage]);
 
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("user") || "{}");
+    const user = decrypt(localStorage.getItem("user"));
 
     if (!user || Object.keys(user).length === 0) {
       window.location.href = "/login";
