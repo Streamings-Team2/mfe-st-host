@@ -21,10 +21,14 @@ import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
 import ErrorBoundary from "mfe_st_errors/ErrorBoundary";
 import LoginComponent from "mfe_st_login/LoginComponent";
 
-const msalInstance = new PublicClientApplication(msalConfig);
+const args = {
+  environment: process.env.NODE_ENV === "production" ? "production" : "development",
+};
+
+const msalInstance = new PublicClientApplication(msalConfig(args));
 
 const client = new ApolloClient({
-  uri: "http://localhost:4000",
+  uri: process.env.NODE_ENV === "production" ? "https://d3ukptxqg81hnz.cloudfront.net" :"http://localhost:4000",
   cache: new InMemoryCache(),
 });
 const App = () => (
