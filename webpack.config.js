@@ -19,11 +19,13 @@ module.exports = (_, argv) => {
     const remotes = argv.mode === "production" ? {
       mfe_st_common: 'mf_st_common@https://d3ukptxqg81hnz.cloudfront.net/mfe-st-common/remoteEntry.js',
       mfe_st_utils: 'mfe_st_utils@https://d3ukptxqg81hnz.cloudfront.net/mfe-st-utils/remoteEntry.js',
-      mfe_st_errors: 'mfe_st_error@https://d3ukptxqg81hnz.cloudfront.net/mfe-st-error/remoteEntry.js'
+      mfe_st_errors: 'mfe_st_error@https://d3ukptxqg81hnz.cloudfront.net/mfe-st-error/remoteEntry.js',
+      mfe_st_login: 'mfe_st_login@https://d3ukptxqg81hnz.cloudfront.net/mfe-st-login/remoteEntry.js'
     } : {
       mfe_st_common: 'mf_st_common@http://localhost:4210/remoteEntry.js',
       mfe_st_utils: 'mfe_st_utils@http://localhost:4211/remoteEntry.js',
-      mfe_st_errors: 'mfe_st_error@http://localhost:4212/remoteEntry.js'
+      mfe_st_errors: 'mfe_st_error@http://localhost:4212/remoteEntry.js',
+      mfe_st_login: 'mfe_st_login@http://localhost:4213/remoteEntry.js'
     };
   return {
     output: {
@@ -35,7 +37,7 @@ module.exports = (_, argv) => {
     },
 
     devServer: {
-      port: 4200,
+      port: 3000,
       historyApiFallback: true,
       watchFiles: [path.resolve(__dirname, 'src')],
       onListening: function (devServer) {

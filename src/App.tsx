@@ -1,100 +1,73 @@
-import "./index.scss"
-import '@fontsource-variable/roboto-condensed'
-import React, { Suspense, useEffect, useState }  from "react"
-import ReactDOM from "react-dom/client"
-import TableComponent from "mfe_st_common/TableComponent"
-import FilterComponent from "./components/filter/filterContainer"
-import PaginationComponent from "mfe_st_common/PaginationComponent"
-import ErrorBoundary  from "mfe_st_errors/ErrorBoundary";
-// import BuggyComponent  from "mfe_st_errors/BuggyComponent";
-import {getPagination, getDataSlice} from "mfe_st_utils/Pagination"
-import {restGet} from "mfe_st_utils/Getters"
-import {URL} from "mfe_st_utils/CONSTANTS"
-import { TABLE_PAY_HEADERS } from "./mock/mock"
-import { Flight } from "./models/Flight"
+import "./index.scss";
+import "@fontsource-variable/roboto-condensed";
+import React, { Suspense } from "react";
+import ReactDOM from "react-dom/client";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 
-const App = () => {
-  const [data, setData] = useState<Flight[]>([])
-  const [parameters, setParameters] = useState<string>("")
-  const [currentPage, setCurrentPage] = useState(1)
-  const [visiblePages, setVisiblePages ] = useState<number[]>([])
-  const [totalPages, setTotalPages ] = useState<number>(0)
-  const [itemsPerPage, _ ] = useState<number>(5)
+import { MsalProvider } from "@azure/msal-react";
+import { PublicClientApplication } from "@azure/msal-browser";
+import { msalConfig } from "../msalConfig";
 
+import { MainApp } from "./components/session/mainApp";
+import { PrivateRoute } from "./components/session/privateRoute";
 
-  const handlePageChange = (page: number)=>{
-    setCurrentPage(page)
-    getFlights(URL, parameters, page)
-  }
+import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
 
-  const handlerData = (filters:any)=>{
-    setParameters(filters)
-    getFlights(URL, parameters, currentPage)
-  }
-  
-  const getFlights = (url:string, params:string, currentPage:number)=>{
-    const query = Object.keys(params)
-      .filter((key:any) => params[key] !== "")
-      .map((key:any) => `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`)
-      .join('&');
+import ErrorBoundary from "mfe_st_errors/ErrorBoundary";
+import LoginComponent from "mfe_st_login/LoginComponent";
 
-    restGet(`${url}?${query}`)
-      .then((data:Flight[]) => {
-        const {pages, totalPages} = getPagination(currentPage, data.length,itemsPerPage, 3)
-        setVisiblePages(pages)
-        setTotalPages(totalPages)
-        setData(getDataSlice(data, itemsPerPage, currentPage))
-      })
-      .catch((err: any) =>{
-        console.error(err)
-      })
-  }
+const args = {
+  environment:
+    process.env.NODE_ENV === "production" ? "production" : "development",
+};
 
-  useEffect(()=> {
-    getFlights(URL, parameters, 1)
-  },[parameters])
+const msalInstance = new PublicClientApplication(msalConfig(args));
 
-  return (
-    <div className="h-screen bg-blue-100 p-4 flex flex-col">
-      {/* filter */}
-      <div className="bg-white rounded-t-lg p-4 shadow-md mb-4">
-        <FilterComponent onData={handlerData}/>
-      </div>
-      {/* <BuggyComponent />  */}
-      {/* table */}
-      <div className="flex-grow overflow-y-auto">
-        <TableComponent
-          headers={TABLE_PAY_HEADERS}
-          data={data}
-          editActions={()=>{}}
-          optionsActions={()=>{}}
-        />
-      </div>
-    
-      {/* pages */}
-      <div className="bg-white rounded-b-lg p-4 shadow-md mb-4 flex items-center justify-center mt-4">
-        {data.length && (
-          <PaginationComponent
-            currentPage={currentPage}
-            totalPages={totalPages}
-            visiblePages={visiblePages}
-            onPageChange={handlePageChange}
-          />
-        )}
-      </div>
-    </div>
-  )
+const client = new ApolloClient({
+  uri:
+    process.env.NODE_ENV === "production"
+      ? "https://bqdxn3lstb.execute-api.us-east-1.amazonaws.com"
+      : "http://localhost:4000",
+  cache: new InMemoryCache(),
+});
+const App = () => (
+  <ApolloProvider client={client}>
+    <MsalProvider instance={msalInstance}>
+      <Router>
+        <Suspense fallback={<div>Loading...</div>}>
+          <ErrorBoundary>
+            <Routes>
+              <Route
+                path="/login"
+                element={
+                  <div className="min-h-screen flex items-center justify-center bg-gray-100">
+                    <LoginComponent />
+                  </div>
+                }
+              />
+              <Route
+                path="/"
+                element={
+                  <PrivateRoute>
+                    <MainApp />
+                  </PrivateRoute>
+                }
+              />
+              <Route path="*" element={<Navigate to="/" />} />
+            </Routes>
+          </ErrorBoundary>
+        </Suspense>
+      </Router>
+    </MsalProvider>
+  </ApolloProvider>
+);
 
-}
-
-const rootElement = document.getElementById("app")
-if (!rootElement) throw new Error("Failed to find the root element")
-const root = ReactDOM.createRoot(rootElement as HTMLElement)
-root.render(
-  <Suspense fallback={<div>loading</div>}>
-    <ErrorBoundary>
-      <App />
-    </ErrorBoundary>
-  </Suspense>
-)
-
+const rootElement = document.getElementById("app");
+if (!rootElement) throw new Error("Failed to find the root element");
+const root = ReactDOM.createRoot(rootElement as HTMLElement);
+root.render(<App />);
