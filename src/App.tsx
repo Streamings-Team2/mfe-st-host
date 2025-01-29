@@ -28,7 +28,7 @@ const args = {
 const msalInstance = new PublicClientApplication(msalConfig(args));
 
 const client = new ApolloClient({
-  uri: process.env.NODE_ENV === "production" ? "https://d3ukptxqg81hnz.cloudfront.net" :"http://localhost:4000",
+  uri: process.env.NODE_ENV === "production" ? "https://bqdxn3lstb.execute-api.us-east-1.amazonaws.com" :"http://localhost:4000",
   cache: new InMemoryCache(),
 });
 const App = () => (
